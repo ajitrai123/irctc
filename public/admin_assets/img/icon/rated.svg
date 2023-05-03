@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="56" height="56" viewBox="0 0 56 56">
+  <defs>
+    <clipPath id="clip-rated">
+      <rect width="56" height="56"/>
+    </clipPath>
+  </defs>
+  <g id="rated" clip-path="url(#clip-rated)">
+    <path id="Icon_material-star" data-name="Icon material-star" d="M14.713,20.885l7.238,4.369L20.03,17.02l6.4-5.54L18,10.765,14.713,3l-3.291,7.765L3,11.48l6.4,5.54L7.474,25.254Z" transform="translate(13.375 14.237)" fill="#759ef2"/>
+  </g>
+</svg>

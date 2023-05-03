@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="56" height="56" viewBox="0 0 56 56">
+  <defs>
+    <clipPath id="clip-Unresolved">
+      <rect width="56" height="56"/>
+    </clipPath>
+  </defs>
+  <g id="Unresolved" clip-path="url(#clip-Unresolved)">
+    <path id="Icon_awesome-question" data-name="Icon awesome-question" d="M9.468,0A8.421,8.421,0,0,0,1.987,3.956a1.044,1.044,0,0,0,.225,1.429L4.087,6.807a1.043,1.043,0,0,0,1.445-.18c1.089-1.364,1.9-2.149,3.6-2.149,1.337,0,2.991.861,2.991,2.157,0,.98-.809,1.484-2.129,2.224-1.54.863-3.577,1.937-3.577,4.625v.425a1.043,1.043,0,0,0,1.043,1.043h3.15a1.043,1.043,0,0,0,1.043-1.043v-.251c0-1.863,5.445-1.94,5.445-6.982C17.1,2.88,13.157,0,9.468,0ZM9.032,16.232a3.011,3.011,0,1,0,3.011,3.011A3.014,3.014,0,0,0,9.032,16.232Z" transform="translate(18.552 17.237)" fill="#c25151"/>
+  </g>
+</svg>

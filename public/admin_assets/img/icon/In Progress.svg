@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="56" height="56" viewBox="0 0 56 56">
+  <defs>
+    <clipPath id="clip-In_Progress">
+      <rect width="56" height="56"/>
+    </clipPath>
+  </defs>
+  <g id="In_Progress" data-name="In Progress" clip-path="url(#clip-In_Progress)">
+    <path id="Icon_material-timelapse" data-name="Icon material-timelapse" d="M18.327,9.2a6.43,6.43,0,0,0-4.564-1.894v6.458L9.2,18.327A6.454,6.454,0,1,0,18.327,9.2ZM13.763,3A10.763,10.763,0,1,0,24.526,13.763,10.767,10.767,0,0,0,13.763,3Zm0,19.374a8.611,8.611,0,1,1,8.611-8.611A8.608,8.608,0,0,1,13.763,22.374Z" transform="translate(14.237 14.237)" fill="#feca71"/>
+  </g>
+</svg>
