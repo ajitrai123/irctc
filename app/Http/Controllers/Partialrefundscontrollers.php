@@ -38,7 +38,7 @@ class Partialrefundscontrollers extends Controller
                 }    
             
                 if (!empty($from_date) && !empty($to_date)) {
-                    $query->whereBetween('partial_refund.created_at', array($from_date, $to_date));
+                    $query->whereBetween('partial_refund.created_at', array($from_date, date('Y-m-d', strtotime($to_date. ' + 1 days'))));
                 }
                 $received_data = $query->get();
 
@@ -74,7 +74,7 @@ class Partialrefundscontrollers extends Controller
                 }
             return datatables()->of($received_data)->make(true);
         }
-        return view('partial-Refund');
+        return view('Partial-Refund');
     }
     public function partial_Refund_export(Request $request)
     {

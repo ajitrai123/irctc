@@ -15,15 +15,12 @@ class DashboardControllers extends Controller
     
     public function index()
     {
-      // $bookingquery = Booking::select('id', 'created_at')
-      //     ->whereYear('created_at', date('Y'))
-      //     ->whereMonth('created_at', '1')
-      //     ->toSql();
-      //     dd($bookingquery);
+      $total_onboard_agent_current = Agents::where('created',Carbon::today())->count();
       $total_onboard_agent = Agents::count();
-      $total_active_agent = Booking::where('dateOfBooking',Carbon::today())->groupBy('agentUid')->count();
+      $total_active_agent_cuurent = Booking::where('dateOfBooking',Carbon::today())->groupBy('agentUid')->count();
+      $total_active_agent = Agents::count();
+      $total_inactive_agent_current = $total_onboard_agent_current-$total_active_agent_cuurent;
       $total_inactive_agent = $total_onboard_agent-$total_active_agent;
-      $total_onboard_agent = Agents::count();
       $total_booking_today = Booking::where('dateOfBooking',Carbon::today())->count();
       $total_cancelled_ticket_today = Cancellation::where('created_at',Carbon::today())->count();
       $total_faild_transection_today = Payments::where('created_at',Carbon::today())->count();
@@ -80,7 +77,7 @@ class DashboardControllers extends Controller
         }
         $cancellation_array=json_encode($cancellation_array);
 
-    return view('index', compact('total_onboard_agent','total_active_agent','total_inactive_agent','total_booking_today','total_cancelled_ticket_today','total_faild_transection_today','booking_array','cancellation_array'));
+    return view('index', compact('total_onboard_agent','total_active_agent','total_inactive_agent','total_onboard_agent_current','total_active_agent_cuurent','total_inactive_agent_current','total_booking_today','total_cancelled_ticket_today','total_faild_transection_today','booking_array','cancellation_array'));
      }
      public function booking_graph_data(Request $request){
         $month= $request->month;

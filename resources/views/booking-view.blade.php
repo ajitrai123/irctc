@@ -4,15 +4,15 @@
 
 <nav aria-label="breadcrumb background-light text-right">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="http://localhost/irctcnew/public/">Home</a></li>
-        <li class="breadcrumb-item"><a href="http://localhost/irctcnew/public/booking">Report</a></li>
+        <li class="breadcrumb-item"><a href="/irctc/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/irctc/booking">Report</a></li>
         <li class="breadcrumb-item active" aria-current="page">View Page </li>
     </ol>
 </nav>
 <div class="container-fluid mw-1200 py-30">
     <div class="row">
         <div class="col-md-12">
-            <div class="box">
+            <div class="box" id="printTable">
 
                 {{-- Booking details --}}
                 <div class="box-body">
@@ -21,7 +21,7 @@
                             <h6 class="mb-0">Booking Details</h6>
                         </div>
                         <div class="col-md-4">
-                            <a href="http://localhost/irctcnew/public/booking" class="btn btn-sm m-0  btn-light">Back</a>
+                            <button onclick="print('booking-details.pdf')" id="noprint_btn"  class="btn btn-sm m-0  btn-primary">Download</button>
                         </div>
                     </div>
                 </div>
@@ -42,14 +42,14 @@
                         </div>
                         <div class="col-md-4">
                             <div class="view-font">
-                                <label class="label-app">Client Transection Id </label>
+                                <label class="label-app">Client Transaction Id </label>
                                 <h6>{{ $payments->reqTxn }}</h6>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="view-font">
-                                <label class="label-app">CSC Transection</label>
-                                <h6>{{ $payments->csc_txn }}</h6>
+                                <label class="label-app">CSC Transaction</label>
+                               <h6>{{ $payments->csc_txn }}</h6>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -84,7 +84,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="view-font">
-                                <label class="label-app">Boarding Stationn Name</label>
+                                <label class="label-app">Boarding Station Name</label>
                                 <h6>{{ $booking->boardingStnName }}</h6>
                             </div>
                         </div>
@@ -169,11 +169,11 @@
                     </div>
                 </div>
 
-                {{-- Transection details --}}
+                {{-- Transaction details --}}
                 <div class="box-body">
                     <div class="row">
                         <div class="col-8">
-                            <h6 class="mb-0">Transection Details</h6>
+                            <h6 class="mb-0">Transaction Details</h6>
                         </div>
                     </div>
                 </div>
@@ -182,7 +182,7 @@
                     <div class="row ">
                         {{-- <div class="col-md-4">
                             <div class="view-font">
-                                <label class="label-app">Transection Status</label>
+                                <label class="label-app">Transaction Status</label>
                                 <h6>{{ $payments->txn_status }}</h6>
                             </div>
                         </div> --}}
@@ -242,13 +242,13 @@
                         </div>
                         <div class="col-md-4">
                             <div class="view-font">
-                                <label class="label-app">Transection Amount</label>
+                                <label class="label-app">Transaction Amount</label>
                                 <h6>{{ $payments->txn_amount }}</h6>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="view-font">
-                                <label class="label-app">Transection date</label>
+                                <label class="label-app">Transaction date</label>
                                 <h6>{{ date("d/m/Y", strtotime($payments->created_at)); }}</h6>
                             </div>
                         </div>

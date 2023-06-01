@@ -92,7 +92,7 @@
             defaultDate: "+1d",
             changeMonth: true,
             changeYear: true,
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',endDate: '+0d',
             autoclose: true
         }).on('hide', function() {
             var selected = $(this).val();
@@ -102,7 +102,7 @@
             defaultDate: "+1d",
             changeMonth: true,
             changeYear: true,
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',endDate: '+0d',
             autoclose: true
         }).on('hide', function() {
             var selected = $(this).val();
@@ -172,14 +172,9 @@
         });
         $("#other").keyup(function() {
             var other = $('#other').val();
-            var from_date = $('#from_date').val();
-            var to_date = $('#to_date').val();
+            var from_date = $('#from_date').val().split("-").reverse().join("-");
+            var to_date = $('#to_date').val().split("-").reverse().join("-");
             if (other.length != 0) {
-                // $('#other').val('');
-                // $('#from_date').val('');
-                // $('#to_date').val('');
-                sessionStorage.setItem("report_id", other);
-                sessionStorage.setItem("report_date", '');
                 $('#order_table').DataTable().destroy();
                 load_data(other, from_date, to_date);
             } else {
@@ -190,9 +185,10 @@
         });
         $("#to_date").change(function() {
             var other = $('#other').val();
-            var from_date = $('#from_date').val();
-            var to_date = $('#to_date').val();
+            var from_date = $('#from_date').val().split("-").reverse().join("-");
+            var to_date = $('#to_date').val().split("-").reverse().join("-");
             if (!from_date) {
+		$('.notify-container').empty();
                 notify({
                     message: 'Please select a from date first.',
                     color: 'danger',
@@ -207,6 +203,7 @@
                     var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
                     if (diffDays > 7) {
+			$('.notify-container').empty();
                         notify({
                             message: 'Please select a date range within 7 days.',
                             color: 'danger',
@@ -220,6 +217,7 @@
                         load_data(other, from_date, to_date);
                     }
                 } else {
+			$('.notify-container').empty();
                     notify({
                             message: 'Please select a valid date.',
                             color: 'danger',
@@ -232,8 +230,8 @@
         });
         $("#from_date").change(function() {
             var other = $('#other').val();
-            var from_date = $('#from_date').val();
-            var to_date = $('#to_date').val();
+            var from_date = $('#from_date').val().split("-").reverse().join("-");
+            var to_date = $('#to_date').val().split("-").reverse().join("-");
             if (from_date.length != 0 && to_date.length != 0) {
                 var fromDateObj = new Date(from_date);
                 var toDateObj = new Date(to_date);
@@ -241,6 +239,7 @@
                 var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
                 if (diffDays > 7) {
+			$('.notify-container').empty();
                     notify({
                             message: 'Please select a date range within 7 days.',
                             color: 'danger',
@@ -253,47 +252,10 @@
                 }
             }
         });
-        // $('#export-btn1').on('click', function() {
-        //     var other = $('#other').val();
-        //     var from_date = $('#from_date').val();
-        //     var to_date = $('#to_date').val();
-        //     $.ajax({
-        //         type:'POST',
-        //         url:'{{  route("transection.export")  }}',
-        //         headers: {
-        //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //             },
-        //         data:{other:other,from_date:from_date,to_date:to_date},
-        //         success:function(result, status, xhr) {
-        //             var disposition = xhr.getResponseHeader('content-disposition');
-        //             var matches = /"([^"]*)"/.exec(disposition);
-        //             var filename = (matches != null && matches[1] ? matches[1] : 'transection.csv');
-
-        //             // The actual download
-        //             var blob = new Blob([result], {
-        //                 type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        //             });
-        //             var link = document.createElement('a');
-        //             link.href = window.URL.createObjectURL(blob);
-        //             link.download = filename;
-
-        //             document.body.appendChild(link);
-
-        //             link.click();
-        //             document.body.removeChild(link);
-        //             notify({
-        //                 message: 'Data is exported.',
-        //                 color: 'success',
-        //                 timeout: 5000
-        //             });
-        //         }
-        //     });
-        // });
-        // Export button event handler
         $('#export-btn').on('click', function() {
             var other = $('#other').val();
-            var from_date = $('#from_date').val();
-            var to_date = $('#to_date').val();
+            var from_date = $('#from_date').val().split("-").reverse().join("-");
+            var to_date = $('#to_date').val().split("-").reverse().join("-");
             if (other != '' || from_date != '') {
                 $.ajax({
                     type:'POST',
@@ -323,6 +285,7 @@
 
                         link.click();
                         document.body.removeChild(link);
+			$('.notify-container').empty();
                         notify({
                             message: 'Data is exported.',
                             color: 'success',
@@ -330,54 +293,8 @@
                         });
                     }
                 });
-                // var table = $('#order_table').DataTable();
-                // // Get the table data as an array of objects
-                // var data = table.rows().data().toArray();
-                // // Extract column names from DataTable object
-                // var columns = table.columns().header().toArray().map(function(column) {
-                //     return $(column).text();
-                // });
-
-                // // Convert the array of objects into an array of arrays, removing any HTML tags
-                // var rows = data.map(function(row) {
-                //     var rowValues = Object.values(row);
-                //     var cleanRow = rowValues.map(function(value) {
-                //         // Remove any HTML tags from the cell value if it's a string
-                //         if (typeof value === 'string') {
-                //             var cleanValue = value.replace(/<[^>]*>/g, '');
-                //             return cleanValue;
-                //         } else {
-                //             return value;
-                //         }
-                //     });
-                //     return cleanRow;
-                // });
-
-                // // Insert column names as the first row
-                // columns.pop();
-                // rows.unshift(columns);
-
-                // // Create a new workbook and worksheet
-                // var workbook = new ExcelJS.Workbook();
-                // var worksheet = workbook.addWorksheet('Sheet1');
-
-                // // Add the table data to the worksheet
-                // worksheet.addRows(rows);
-                // var today = new Date();
-                // var report_id = sessionStorage.getItem("report_id");
-                // var report_date = sessionStorage.getItem("report_date");
-                // var filename = 'transection-' + report_id + '-' + report_date + '.csv';
-                // // Save the workbook as an Excel file
-                // workbook.csv.writeBuffer().then(function(buffer) {
-                //     saveAs(new Blob([buffer], {
-                //         type: 'application/octet-stream'
-                //     }), filename);
-                //     sessionStorage.setItem("report_date", '');
-                //     sessionStorage.setItem("report_id", '');
-                //     // workbook.xlsx.writeBuffer().then(function(buffer) {
-                //     // saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'example.xlsx');
-                // });
             } else {
+		$('.notify-container').empty();
                 notify({
                     message: 'For exporting data please search by CSC ID or use date range filter.',
                     color: 'danger',

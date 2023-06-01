@@ -39,7 +39,7 @@ class FullrefundsControllers extends Controller
     }    
        
     if (!empty($from_date) && !empty($to_date)) {
-        $query->whereBetween('full_refund.created_at', array($from_date, $to_date));
+        $query->whereBetween('full_refund.created_at', array($from_date, date('Y-m-d', strtotime($to_date. ' + 1 days'))));
     }
     $received_data = $query->get();
 

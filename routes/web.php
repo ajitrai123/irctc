@@ -127,6 +127,9 @@ Route::get('partial-refund-view/{id}',[Partialrefundscontrollers::class, 'partia
 Route::get('tdr-view/{id}',[TdrController::class, 'tdr_view'])->name('tdr.view');
 Route::get('waiting-cancellation-view/{id}',[WaitingListController::class, 'waiting_cancellation_view'])->name('waiting.cancellation.view');
 
+Route::get('insert-tdr',[TdrController::class, 'insert_tdr'])->name('insert.tdr');
+
+
 
 
 

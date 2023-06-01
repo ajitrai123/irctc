@@ -5,14 +5,14 @@
         <div class="col-md-7">
             <div class="row">
 
-                <div class="col-md-4">
+               {{--  <div class="col-md-4">
                     <div class="fbox fbox-primary-2 mb-20" style="background-image: url(img/dm/Group-12939.svg);">
                         <img class="fbox-background" src="img/icon/resolved design.svg">
                         <h6 class="mb-2">
                             <span class="fbox-icon">
                                 <img class="w-100" src="{{asset('admin_assets/img/icon/Resolved.svg')}}">
                             </span>
-                            <span class="fbox-icon-text">{{ $total_onboard_agent }}</span>
+                            <span class="fbox-icon-text">{{ $total_onboard_agent_current }}</span>
                         </h6>
                         <h6 class="fbox-i-text">Total Onboarded Agents</h6>
                         <!-- <h3>4123</h3> -->
@@ -26,7 +26,7 @@
                             <span class="fbox-icon">
                                 <img class="w-100" src="{{asset('admin_assets/img/icon/Resolved.svg')}}">
                             </span>
-                            <span class="fbox-icon-text">{{ $total_active_agent }}</span>
+                            <span class="fbox-icon-text">{{ $total_active_agent_cuurent }}</span>
                         </h6>
                         <h6 class="fbox-i-text">Active Agents</h6>
                         <!-- <h3>4123</h3> -->
@@ -41,11 +41,48 @@
                             <span class="fbox-icon">
                                 <img class="w-100" src="{{asset('admin_assets/img/icon/Resolved.svg')}}">
                             </span>
-                            <span class="fbox-icon-text">{{ $total_inactive_agent }}</span>
+                            <span class="fbox-icon-text">{{ $total_inactive_agent_current }}</span>
                         </h6>
                         <h6 class="fbox-i-text">Inactive Agents</h6>
                         <!-- <h3>4123</h3> -->
                         <p class="mb-0">Current Date</p>
+                    </div>
+                </div> --}}
+		<div class="col-md-4">
+                    <div class="fbox fbox-primary-2 mb-20" style="background-image: url(img/dm/Group-12939.svg);">
+                        <img class="fbox-background" src="img/icon/resolved design.svg">
+                        <h6 class="mb-2">
+                            <span class="fbox-icon">
+                                <img class="w-100" src="{{asset('admin_assets/img/icon/Resolved.svg')}}">
+                            </span>
+                            <span class="fbox-icon-text">{{ $total_onboard_agent }}</span>
+                        </h6>
+                        <h6 class="fbox-i-text">Total Agents</h6>
+                    </div>
+                </div>
+		<div class="col-md-4">
+                    <div class="fbox fbox-primary-2 mb-20" style="background-image: url(img/dm/Group-12940.svg);">
+                        <img class="fbox-background" src="admin_assets/img/icon/resolved design.svg">
+                        <h6 class="mb-2">
+                            <span class="fbox-icon">
+                                <img class="w-100" src="{{asset('admin_assets/img/icon/Resolved.svg')}}">
+                            </span>
+                            <span class="fbox-icon-text">{{ $total_active_agent }}</span>
+                        </h6>
+                        <h6 class="fbox-i-text">Active Agents</h6>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="fbox fbox-primary-2 mb-20"
+                        style="background-image: url({{asset('admin_assets/img/dm/Group-12938.svg')}});">
+                        <img class="fbox-background" src="{{asset('admin_assets/img/icon/resolved design.svg')}}">
+                        <h6 class="mb-2">
+                            <span class="fbox-icon">
+                                <img class="w-100" src="{{asset('admin_assets/img/icon/Resolved.svg')}}">
+                            </span>
+                            <span class="fbox-icon-text">{{ $total_inactive_agent }}</span>
+                        </h6>
+                        <h6 class="fbox-i-text">Inactive Agents</h6>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -91,17 +128,7 @@
                         <p class="mb-0">Current Date</p>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <div class="fbox fbox-primary-2 mb-20">
-
-                        <img class="fbox-background" src="{{asset('admin_assets/img/icon/resolved design.svg')}}">
-                    </div>
-                </div>
-
-
-
-
-
+		
             </div>
 
         </div>
@@ -122,7 +149,7 @@
                                         <option value='2'>February</option>
                                         <option value='3'>March</option>
                                         <option value='4'>April</option>
-                                        <option value='5'>May</option>
+                                        <option value='5' selected>May</option>
                                         <option value='6'>June</option>
                                         <option value='7'>July</option>
                                         <option value='8'>August</option>
@@ -216,7 +243,7 @@
                                         <option value="2020">2020</option>
                                         <option value="2021">2021</option>
                                         <option value="2022">2022</option>
-                                        <option value="2023">2023</option>
+                                        <option value="2023" selected>2023</option>
                                     </select>
                                 </div>
                             </div>
@@ -240,7 +267,7 @@
                                         <option value='2'>February</option>
                                         <option value='3'>March</option>
                                         <option value='4'>April</option>
-                                        <option value='5'>May</option>
+                                        <option value='5' selected>May</option>
                                         <option value='6'>June</option>
                                         <option value='7'>July</option>
                                         <option value='8'>August</option>
@@ -334,7 +361,7 @@
                                         <option value="2020">2020</option>
                                         <option value="2021">2021</option>
                                         <option value="2022">2022</option>
-                                        <option value="2023">2023</option>
+                                        <option value="2023" selected>2023</option>
                                     </select>
                                 </div>
                             </div>

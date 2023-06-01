@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 use DataTables;
 use App\Models\Booking;
-// use DB;
+use DB;
 // use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\WaitingCancellationExport;
 
@@ -37,14 +36,14 @@ class WaitingListController extends Controller
         ->orWhere('payments.reqTxn','like','%'. $other .'%');
     } 
     if (!empty($from_date) && !empty($to_date)) {
-        $query->whereBetween('passengers.cancellationDate', array($from_date, $to_date));
+        $query->whereBetween('passengers.cancellationDate', array($from_date, date('Y-m-d', strtotime($to_date. ' + 1 days'))));
     }   
        
     $received_data = $query->get();
 
     return Datatables::of($received_data)
         ->addIndexColumn()
-        ->addColumn('action', function($row) {-
+        ->addColumn('action', function($row) {
             $btn = '<a href="'.route("waiting.cancellation.view", ["id" => $row->id]).'" type="button" class="btn btn-light btn-sm mb-1"><i class="bx bx-low-vision"></i></a>';
             return $btn;
         })

@@ -38,7 +38,7 @@ class TransactionController extends Controller
     }    
        
     if (!empty($from_date) && !empty($to_date)) {
-        $query->whereBetween('created_at', array($from_date, $to_date));
+        $query->whereBetween('created_at', array($from_date, date('Y-m-d', strtotime($to_date. ' + 1 days'))));
     }
     $received_data = $query->get();
         return Datatables::of($received_data)

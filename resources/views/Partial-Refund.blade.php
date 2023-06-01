@@ -87,7 +87,7 @@
             defaultDate: "+1d",
             changeMonth: true,
             changeYear: true,
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',endDate: '+0d',
             autoclose: true
         }).on('hide', function() {
             var selected = $(this).val();
@@ -97,7 +97,7 @@
             defaultDate: "+1d",
             changeMonth: true,
             changeYear: true,
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',endDate: '+0d',
             autoclose: true
         }).on('hide', function() {
             var selected = $(this).val();
@@ -146,8 +146,8 @@
         }
         $("#other").keyup(function() {
             var other = $('#other').val();
-            var from_date = $('#from_date').val();
-            var to_date = $('#to_date').val();
+            var from_date = $('#from_date').val().split("-").reverse().join("-");
+            var to_date = $('#to_date').val().split("-").reverse().join("-");
             if (other.length != 0) {
                 // $('#other').val('');
                 // $('#from_date').val('');
@@ -164,9 +164,10 @@
         });
         $("#to_date").change(function() {
             var other = $('#other').val();
-            var from_date = $('#from_date').val();
-            var to_date = $('#to_date').val();
+            var from_date = $('#from_date').val().split("-").reverse().join("-");
+            var to_date = $('#to_date').val().split("-").reverse().join("-");
             if (!from_date) {
+		$('.notify-container').empty();
                 notify({
                     message: 'Please select a from date first.',
                     color: 'danger',
@@ -181,6 +182,7 @@
                     var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
                     if (diffDays > 7) {
+			$('.notify-container').empty();
                         notify({
                             message: 'Please select a date range within 7 days.',
                             color: 'danger',
@@ -199,6 +201,7 @@
                         // $('#to_date').val('');
                     }
                 } else {
+			$('.notify-container').empty();
                     notify({
                             message: 'Please select a valid date.',
                             color: 'danger',
@@ -211,8 +214,8 @@
         });
         $("#from_date").change(function() {
             var other = $('#other').val();
-            var from_date = $('#from_date').val();
-            var to_date = $('#to_date').val();
+            var from_date = $('#from_date').val().split("-").reverse().join("-");
+            var to_date = $('#to_date').val().split("-").reverse().join("-");
             if (from_date.length != 0 && to_date.length != 0) {
                 var fromDateObj = new Date(from_date);
                 var toDateObj = new Date(to_date);
@@ -220,6 +223,7 @@
                 var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
                 if (diffDays > 7) {
+			$('.notify-container').empty();
                     notify({
                             message: 'Please select a date range within 7 days.',
                             color: 'danger',
@@ -243,8 +247,8 @@
         // Export button event handler
         $('#export-btn').on('click', function() {
             var other = $('#other').val();
-            var from_date = $('#from_date').val();
-            var to_date = $('#to_date').val();
+            var from_date = $('#from_date').val().split("-").reverse().join("-");
+            var to_date = $('#to_date').val().split("-").reverse().join("-");
             if (other != '' || from_date != '') {
                 $.ajax({
                     type:'POST',
@@ -274,6 +278,7 @@
 
                         link.click();
                         document.body.removeChild(link);
+			$('.notify-container').empty();
                         notify({
                             message: 'Data is exported.',
                             color: 'success',
@@ -282,6 +287,7 @@
                     }
                 });
             } else {
+		$('.notify-container').empty();
                 notify({
                     message: 'For exporting data please search by CSC ID or use date range filter.',
                     color: 'danger',

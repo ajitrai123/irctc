@@ -43,7 +43,7 @@ class CancellationController extends Controller
         ->orWhere('passengers.cancellationId', 'like','%'. $other .'%');
     }    
     if (!empty($from_date) && !empty($to_date)) {
-        $query->whereBetween('bookings.created_at', array($from_date, $to_date));
+        $query->whereBetween('bookings.created_at', array($from_date, date('Y-m-d', strtotime($to_date. ' + 1 days'))));
     }
     $received_data = $query->get();
 

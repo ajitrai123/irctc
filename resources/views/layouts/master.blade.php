@@ -199,7 +199,7 @@
             <footer class="footer mt-auto py-3 white-background">
                 <div class="container-fluid d-flex justify-content-between">
                    <div>
-                    <span class="text-muted text-center">Place sticky footer content here.</span>
+                    <span class="text-muted text-center">Copyright © 2023</span>
                    </div>
                    <div>
                     <span class=" text-center text-dark">csc e-governance services india limited</span>
@@ -250,7 +250,27 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>
 
 <script src="{{asset('admin_assets/js/notify.min.js')}}"></script>
-    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js "></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+	window.jsPDF = window.jspdf.jsPDF;
+    	var docPDF = new jsPDF();
+    function print(name){
+        var elementHTML = document.querySelector("#printTable");
+        elementHTML.querySelector("div div div button#noprint_btn").style.display = "none";
+        docPDF.html(elementHTML, {
+            callback: function(docPDF) {
+            docPDF.save(name);
+            },
+            x: 15,
+            y: 15,
+            width: 170,
+            windowWidth: 650
+        });
+	
+    }
+
+</script>    
     
 
 </body>
