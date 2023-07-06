@@ -32,7 +32,7 @@
             <div class="tab-content " id="myTabContent">
                 <div class="tab-pane fade show active" id="unresolved" role="tabpanel" aria-labelledby="unresolved-tab">
 
-                    <div class="row justify-content-end">
+                    <div class="row justify-content-start">
 
                         <div class="col-md-3 mb-3">
                             <input type="text" class="form-control " placeholder="Search by CSC ID" id="other"
@@ -46,13 +46,19 @@
                             <input type="text" class="form-control " placeholder="End Date" id="to_date"
                                 name="to_date" value="" readonly />
                         </div>
-                        {{-- <div class="col-sm-2">
-                            <button type="submit" class="btn btn-light" name="filter" id="filter" title="Search"><i
-                                    class="bx bx-search"></i></button>
-                        </div> --}}
-                        {{-- <div class="col-md-1 mb-3">
-                            <button type="button" id="clear-filter-btn" class="btn btn-light"><i class="bx bx-refresh"></i></button>
-                        </div> --}}
+                        <div class="col-md-2 mb-3 input-daterange">
+                            <select name="state" id="state" class="form-control">
+                                <option value="">Select State</option>
+                                @foreach ($all_state as $state)
+                                <option value="{{ $state }}">{{ $state }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-3 input-daterange">
+                            <select name="city" id="city" class="form-control">
+                                <option value="">Select City</option>
+                            </select>
+                        </div>
                         <div class="col-md-1 mb-3">
                             <button type="button" id="export-btn" class="btn btn-light"><i
                                     class="bx bx-download"></i></button>
@@ -66,6 +72,7 @@
                                     {{-- SL NO	CSC ID	AGENT ID	PNR NUMBER	TRANSACTION ID	RESERVATION ID	REFUND AMOUNT	CURRENT STATUS	CANCELLED DATE	STATUS --}}
                                     <th class="small font-weight-bold text-uppercase  " scope="col">Sl no</th>
                                     <th class="small font-weight-bold text-uppercase  " scope="col">CSC Id</th>
+                                    <th class="small font-weight-bold text-uppercase  " scope="col">Booking Id</th>
                                     <th class="small font-weight-bold text-uppercase  " scope="col">Agent ID</th>
                                     <th class="small font-weight-bold text-uppercase  " scope="col">PNR Number</th>
                                     <th class="small font-weight-bold text-uppercase  " scope="col">Transaction ID</th>
@@ -89,33 +96,8 @@
         </div>
     </div>
 </div>
-
 <script>
-    $(document).ready(() => {
-        $( "#from_date" ).datepicker({
-            defaultDate: "+1d",
-            changeMonth: true,
-            changeYear: true,
-            format: 'dd-mm-yyyy',endDate: '+0d',
-            autoclose: true
-        }).on('hide', function() {
-            var selected = $(this).val();
-            $( "#to_date" ).datepicker('setStartDate', selected);
-        });
-        $( "#to_date" ).datepicker({
-            defaultDate: "+1d",
-            changeMonth: true,
-            changeYear: true,
-            format: 'dd-mm-yyyy',endDate: '+0d',
-            autoclose: true
-        }).on('hide', function() {
-            var selected = $(this).val();
-            $( "#from_date" ).datepicker('setEndDate', selected);
-        });
-
-        load_data();
-
-        function load_data(other = '', from_date = '', to_date = '') {
+    function load_data(other = '', from_date = '', to_date = '', state = '', city = '') {
             var dataTable = $('#order_table').DataTable({
                 buttons: [
                     'excelHtml5', 'copy', 'excel', 'csv'
@@ -128,10 +110,24 @@
                     data: {
                         other: other,
                         from_date: from_date,
-                        to_date: to_date
+                        to_date: to_date,
+                        state: state,
+                        city: city
                     }
                 },
-                
+                drawCallback: function (settings) { 
+                    // Here the response
+                    var response = settings.json;
+                    if (response.recordsTotal <= 0) {
+                        $('#export-btn').prop('disabled', true);
+                        $('#export-btn').css("background", "red");
+                        $('#export-btn').css("color", "#fff");
+                    }else{
+                        $('#export-btn').prop('disabled', false);
+                        $('#export-btn').css("background", "green")
+                        $('#export-btn').css("color", "#fff");
+                    }
+                },
                 // SL NO	CSC ID	AGENT ID	PNR NUMBER	TRANSACTION ID	RESERVATION ID	REFUND AMOUNT	CURRENT STATUS	CANCELLED DATE	STATUS
                 columns: [{
                         data: 'id',
@@ -140,6 +136,10 @@
                     {
                         data: 'cscId',
                         name: 'cscId'
+                    },
+                    {
+                        data: 'id',
+                        name: 'id'
                     },
                     {
                         data: 'agentUserId',
@@ -194,7 +194,35 @@
                 ]
             });
         }
+</script>
+<script>
+    $(document).ready(() => {
+        $( "#from_date" ).datepicker({
+            defaultDate: "+1d",
+            changeMonth: true,
+            changeYear: true,
+            format: 'dd-mm-yyyy',endDate: '+0d',
+            autoclose: true
+        }).on('hide', function() {
+            var selected = $(this).val();
+            $( "#to_date" ).datepicker('setStartDate', selected);
+        });
+        $( "#to_date" ).datepicker({
+            defaultDate: "+1d",
+            changeMonth: true,
+            changeYear: true,
+            format: 'dd-mm-yyyy',endDate: '+0d',
+            autoclose: true
+        }).on('hide', function() {
+            var selected = $(this).val();
+            $( "#from_date" ).datepicker('setEndDate', selected);
+        });
+
+        load_data();
+
         $("#other").keyup(function() {
+            var city = $('#city').val();
+            var state = $('#state').val();
             var other = $('#other').val();
             var from_date = $('#from_date').val().split("-").reverse().join("-");
             var to_date = $('#to_date').val().split("-").reverse().join("-");
@@ -205,7 +233,7 @@
                 sessionStorage.setItem("report_id", other);
                 sessionStorage.setItem("report_date", '');
                 $('#order_table').DataTable().destroy();
-                load_data(other, from_date, to_date);
+                load_data(other, from_date, to_date, state, city);
             } else {
                 $('#order_table').DataTable().destroy();
                 load_data();
@@ -213,11 +241,13 @@
             }
         });
         $("#to_date").change(function() {
+            var city = $('#city').val();
+            var state = $('#state').val();
             var other = $('#other').val();
             var from_date = $('#from_date').val().split("-").reverse().join("-");
             var to_date = $('#to_date').val().split("-").reverse().join("-");
             if (!from_date) {
-		$('.notify-container').empty();
+		        $('.notify-container').empty();
                 notify({
                     message: 'Please select a from date first.',
                     color: 'danger',
@@ -231,7 +261,7 @@
                     var timeDiff = Math.abs(toDateObj.getTime() - fromDateObj.getTime());
                     var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
                     if (diffDays > 7) {
-			$('.notify-container').empty();
+			            $('.notify-container').empty();
                         notify({
                             message: 'Please select a date range within 7 days.',
                             color: 'danger',
@@ -244,13 +274,10 @@
                         sessionStorage.setItem("report_date", from_date + '-' + to_date);
                         sessionStorage.setItem("report_id", '');
                         $('#order_table').DataTable().destroy();
-                        load_data(other, from_date, to_date);
-                        // $('#other').val('');
-                        // $('#from_date').val('');
-                        // $('#to_date').val('');
+                        load_data(other, from_date, to_date, state, city);
                     }
                 } else {
-			$('.notify-container').empty();
+			        $('.notify-container').empty();
                     notify({
                             message: 'Please select a valid date.',
                             color: 'danger',
@@ -262,6 +289,8 @@
 
         });
         $("#from_date").change(function() {
+            var city = $('#city').val();
+            var state = $('#state').val();
             var other = $('#other').val();
             var from_date = $('#from_date').val().split("-").reverse().join("-");
             var to_date = $('#to_date').val().split("-").reverse().join("-");
@@ -272,7 +301,7 @@
                 var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
                 if (diffDays > 7) {
-			$('.notify-container').empty();
+			        $('.notify-container').empty();
                     notify({
                             message: 'Please select a date range within 7 days.',
                             color: 'danger',
@@ -285,10 +314,7 @@
                     sessionStorage.setItem("report_date", from_date + '-' + to_date);
                     sessionStorage.setItem("report_id", '');
                     $('#order_table').DataTable().destroy();
-                    load_data(other, from_date, to_date);
-                    // $('#other').val('');
-                    // $('#from_date').val('');
-                    // $('#to_date').val('');
+                    load_data(other, from_date, to_date, state, city);
                 }
             }
         });
@@ -346,5 +372,42 @@
         });
     });
 </script>
-
+<script>
+    $(document).ready(function(){
+        $('#state').on('change',function(){
+            var state=this.value;
+            var city = $('#city').val();
+            var other = $('#other').val();
+            var from_date = $('#from_date').val().split("-").reverse().join("-");
+            var to_date = $('#to_date').val().split("-").reverse().join("-");
+            $.ajax({
+                url: "{{ route('count.state.city.wise') }}",
+                type: "POST",
+                data: {_token: "{{ csrf_token() }}",state : state},
+                dataType: "json",
+                success: function(response){
+                    if (response.status==200) {
+                        $('#city option:gt(0)').remove();
+                        $.each(response.data.all_city, function(key, value) {   
+                            $('#city').append($("<option></option>").attr("value", value).text(value)); 
+                        });
+                        
+                    }
+                }
+            });
+            $('#order_table').DataTable().destroy();
+            load_data(other, from_date, to_date,state,city);
+        });
+        $('#city').on('change',function(){
+            var state=$('#state').val();
+            var city=this.value;
+            var other = $('#other').val();
+            var from_date = $('#from_date').val().split("-").reverse().join("-");
+            var to_date = $('#to_date').val().split("-").reverse().join("-");
+            $('#order_table').DataTable().destroy();
+            load_data(other, from_date, to_date, state, city);
+            
+        });
+    });
+</script>
 @endsection

@@ -13,6 +13,7 @@
       <link rel="stylesheet" href="{{asset('admin_assets/datatables/css/jquery.dataTables.min.css')}}">
       <link rel="stylesheet" href="{{asset('admin_assets/datatables/css/dataTables.bootstrap4.min.css')}}"> --}}
       <link href="{{asset('admin_assets/datatable/bootstrap.css')}}" rel="stylesheet">
+      <link href="{{asset('admin_assets/css/style-19-06-23.css')}}" rel="stylesheet">
       <link href="{{asset('admin_assets/datatable/jquery.dataTables.min.css')}}" rel="stylesheet">
       <link href="{{asset('admin_assets/datatable/searchPanes.dataTables.min.css')}}" rel="stylesheet">
       <link href="{{asset('admin_assets/datatable/select.dataTables.min.css')}}" rel="stylesheet">
@@ -87,12 +88,13 @@
                 <li class="">
                     <a href="#">
                         <i class="bx bxs-receipt"></i>
-                        <span class="">REQUEST</span>
+                        <span class="">Status of Registration</span>
                     </a>
                     <div class="aside-link-name">
-                        <a href="{{url('list-requests')}}">List of Requests</a>
-                        <a href="{{url('accepted-requests')}}">List of Accepted Requests</a>
-                        <a href="{{url('list-rejected-requests')}}">List of Rejected Requests</a>
+                        <a href="{{url('list-requests')}}">Number of Applications</a>
+                        <a href="{{url('accepted-requests')}}">Accepted Applications</a>
+                        <a href="{{url('list-rejected-requests')}}">Rejected Applications</a>
+                        <a href="{{url('list-refunded-application')}}">Refunded application</a>
                     </div>
                 </li>
                
@@ -128,12 +130,12 @@
         <!-- end sidebar -->
         <div class="has-left-nav">
             <nav class="topnav">
-                <a href="" class="d-inline-block  text-center">
+                <div class="d-inline-block  text-center">
                     <div class="container">
                         <div class="nav-abs">
                             <span><i class="las la-phone-alt"></i> 1800 121 3468</span>
                             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-                            <span><i class="las la-envelope"></i> helpdesk-https://cscsafar.in</span>
+                            <a href="https://cscsafar.in/"  target="_blank"><span><i class="las la-envelope"></i> helpdesk-https://cscsafar.in</span></a>
                             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
                             <img class="img-fluid" src="{{asset('admin_assets/img/G20_Logo.png')}}">
                             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
@@ -146,7 +148,7 @@
                             <img class="img-fluid" src="https://trainbooking.csccloud.in/assets/img/irctc-logo.png">
                         </div>
                     </div>
-                </a>
+                </div>
             </nav>
             <nav class="navbar navbar-expand-lg  white-background">
                 <div class="container-fluid">
@@ -172,7 +174,7 @@
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="#">Action</a>
                                     <!-- <a class="dropdown-item" href="#">Another action</a> -->
-                                    <a class="dropdown-item" href="#">logout</a>
+                                    <a class="dropdown-item" href="{{ route('logout') }}">logout</a>
                                 </div>
                             </li>
                         </ul>
@@ -271,7 +273,7 @@
     }
 
 </script>    
-    
+@stack('scripts')
 
 </body>
 

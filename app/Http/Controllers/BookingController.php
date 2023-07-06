@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use DataTables;
-use App\Models\Booking;
+use App\Models\Agents;
 // use DB;
 // use Carbon\Carbon;
+use App\Models\Booking;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\BookingExport;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BookingController extends Controller
 {
@@ -17,12 +18,14 @@ class BookingController extends Controller
     {
 
         if (request()->ajax()) {
-            if (!empty($request->other) || !empty($request->from_date) || !empty($request->to_date)) {
+            if (!empty($request->other) || !empty($request->from_date) || !empty($request->to_date) || !empty($request->state) || !empty($request->city)) {
 
                 $from_date = $request->input('from_date');
                 // $to_date = Carbon::parse($request->input('to_date'))->addDay();
                 $to_date   = $request->input('to_date');
                 $other    = $request->input('other');
+                $state   = $request->input('state');
+                $city    = $request->input('city');
 
                 $query = DB::table('bookings')
                     ->join('agents', 'bookings.agentUid', '=', 'agents.id')
@@ -35,6 +38,12 @@ class BookingController extends Controller
                         ->orWhere('bookings.booking_sess_id', 'like', '%' . $other . '%')
                         ->orWhere('payments.csc_txn', 'like', '%' . $other . '%')
                         ->orWhere('bookings.pnrNumber', 'like', '%' . $other . '%');
+                }
+                if (!empty($state)) {
+                    $query->where('agents.stateId', $state);
+                }
+                if (!empty($city)) {
+                    $query->where('agents.cityId', $city);
                 }
                 if (!empty($from_date) && !empty($to_date)) {
                     $query->whereBetween('bookings.created_at', array($from_date, date('Y-m-d', strtotime($to_date. ' + 1 days'))));
@@ -55,7 +64,8 @@ class BookingController extends Controller
                     ->join('agents', 'bookings.agentUid', '=', 'agents.id')
                     ->join('payments', 'bookings.id', '=', 'payments.bookingId')
                     ->select('bookings.*', 'agents.cscId', 'agents.agentUserId', 'payments.csc_txn')
-                    ->where('bookings.status', 6) //use 6 for get all data where status is 5 in enum column
+                    // ->where('bookings.status', 6) //use 6 for get all data where status is 5 in enum column
+                    // ->where('bookings.id', null) 
                     ->get();
                 return Datatables::of($received_data)->addIndexColumn()
                     ->addColumn('action', function ($row) {
@@ -67,7 +77,8 @@ class BookingController extends Controller
             }
             return datatables()->of($received_data)->make(true);
         }
-        return view('booking');
+        $all_state = Agents::groupBy('stateId')->pluck('stateId');
+        return view('booking',compact('all_state'));
     }
     public function booking_export(Request $request)
     {

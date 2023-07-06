@@ -28,7 +28,7 @@
         <div class="box-body">
             <div class="tab-content " id="myTabContent">
                 <div class="tab-pane fade show active" id="unresolved" role="tabpanel" aria-labelledby="unresolved-tab">
-                    <div class="row justify-content-end">
+                    <div class="row justify-content-start">
                         <div class="col-md-3 mb-3">
                             <input type="text" class="form-control " placeholder="Search by CSC ID" id="other" name="other" value="">
                         </div>
@@ -37,6 +37,19 @@
                         </div>
                         <div class="col-md-2 mb-3 input-daterange">
                             <input type="text" class="form-control " placeholder="End Date" id="to_date" name="to_date" value="" readonly />
+                        </div>
+                        <div class="col-md-2 mb-3 input-daterange">
+                            <select name="state" id="state" class="form-control">
+                                <option value="">Select State</option>
+                                @foreach ($all_state as $state)
+                                <option value="{{ $state }}">{{ $state }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-3 input-daterange">
+                            <select name="city" id="city" class="form-control">
+                                <option value="">Select City</option>
+                            </select>
                         </div>
                         <div class="col-md-1 mb-3">
                             <button type="button" id="export-btn" class="btn btn-light"><i class="bx bx-download"></i></button>
@@ -49,6 +62,7 @@
                                     {{-- SL NO	CSC ID	AGENT ID	TRANSACTION ID	BOOKING DATE	JOURNEY DATE	PNR NUMBER	TDR APPLICATION DATE	TDR REASON	RESPONSE --}}
                                     <th class="small font-weight-bold text-uppercase  " scope="col"> Sl no </th>
                                     <th class="small font-weight-bold text-uppercase  " scope="col"> CSC Id </th>
+                                    <th class="small font-weight-bold text-uppercase  " scope="col">Booking Id</th>
                                     <th class="small font-weight-bold text-uppercase  " scope="col"> AGENT ID </th>
                                     <th class="small font-weight-bold text-uppercase  " scope="col"> TRANSACTION ID </th>
                                     <th class="small font-weight-bold text-uppercase  " scope="col"> BOOKING DATE </th>
@@ -69,7 +83,102 @@
         </div>
     </div>
 </div>
+<script>
+    function load_data(other = '', from_date = '', to_date = '', state = '', city = '') {
 
+        var table = $('#order_table').DataTable({
+            buttons: [
+                // 'excelHtml5',    'copy', 'excel'      
+            ],
+            dom: 'Rrtp',
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '{{ route("tdr.index") }}',
+                data: {
+                    other: other,
+                    from_date: from_date,
+                    to_date: to_date,
+                    state: state,
+                    city: city
+                }
+            },
+            drawCallback: function (settings) { 
+                // Here the response
+                var response = settings.json;
+                if (response.recordsTotal <= 0) {
+                    $('#export-btn').prop('disabled', true);
+                    $('#export-btn').css("background", "red");
+                    $('#export-btn').css("color", "#fff");
+                }else{
+                    $('#export-btn').prop('disabled', false);
+                    $('#export-btn').css("background", "green")
+                    $('#export-btn').css("color", "#fff");
+                }
+            },
+            // SL NO	CSC ID	AGENT ID	TRANSACTION ID	BOOKING DATE	JOURNEY DATE	PNR NUMBER	TDR APPLICATION DATE	TDR REASON	RESPONSE
+            columns: [{
+                    data: 'id',
+                    name: 'id'
+                },
+                {
+                    data:'cscId',
+                    namer:'cscId'
+                },
+                {
+                    data: 'bookingId',
+                    name: 'bookingId'
+                },
+                {
+                    data:'agentUserId',
+                    namer:'agentUserId'
+                },
+                {
+                    data:'csc_txn',
+                    namer:'csc_txn'
+                },
+                {
+                    data: 'dateOfBooking',
+                    "render": function (data) {
+                        var date = new Date(data);
+                        var month = date.getMonth() + 1;
+                        return date.getDate() + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear();
+                    }
+                },
+                {
+                    data: 'boardingDate',
+                    "render": function (data) {
+                        var date = new Date(data);
+                        var month = date.getMonth() + 1;
+                        return date.getDate() + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear();
+                    }
+                },
+                {
+                    data: 'pnrNumber',
+                    name: 'pnrNumber'
+                },
+                {
+                    data: 'created_at',
+                    "render": function (data) {
+                        var date = new Date(data);
+                        var month = date.getMonth() + 1;
+                        return date.getDate() + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear();
+                    }
+                },
+                {
+                    data: 'reason_of_tdr',
+                    name: 'reason_of_tdr'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: true,
+                    searchable: true
+                },
+            ]
+        });
+    }
+</script>
 <script>
     $(document).ready(function(){
         $( "#from_date" ).datepicker({
@@ -93,99 +202,16 @@
             $( "#from_date" ).datepicker('setEndDate', selected);
         });    
         load_data();
-        function load_data(other = '', from_date = '', to_date = '') {
-
-            var table = $('#order_table').DataTable({
-                buttons: [
-                    // 'excelHtml5',    'copy', 'excel'      
-                ],
-                dom: 'Rrtp',
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: '{{ route("tdr.index") }}',
-                    data: {
-                        other: other,
-                        from_date: from_date,
-                        to_date: to_date
-                    }
-                },
-                // SL NO	CSC ID	AGENT ID	TRANSACTION ID	BOOKING DATE	JOURNEY DATE	PNR NUMBER	TDR APPLICATION DATE	TDR REASON	RESPONSE
-                columns: [{
-                        data: 'id',
-                        name: 'id'
-                    },
-                    {
-                        data:'cscId',
-                        namer:'cscId'
-                    },
-                    {
-                        data:'agentUserId',
-                        namer:'agentUserId'
-                    },
-                    {
-                        data:'csc_txn',
-                        namer:'csc_txn'
-                    },
-                    {
-                        data: 'dateOfBooking',
-                        "render": function (data) {
-                            var date = new Date(data);
-                            var month = date.getMonth() + 1;
-                            return date.getDate() + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear();
-                        }
-                    },
-                    {
-                        data: 'boardingDate',
-                        "render": function (data) {
-                            var date = new Date(data);
-                            var month = date.getMonth() + 1;
-                            return date.getDate() + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear();
-                        }
-                    },
-                    {
-                        data: 'pnrNumber',
-                        name: 'pnrNumber'
-                    },
-                    {
-                        data: 'created_at',
-                        "render": function (data) {
-                            var date = new Date(data);
-                            var month = date.getMonth() + 1;
-                            return date.getDate() + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear();
-                        }
-                    },
-                    {
-                        data: 'reason_of_tdr',
-                        name: 'reason_of_tdr'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: true,
-                        searchable: true
-                    },
-                ]
-            });
-        }
-        $('#refresh').click(function() {
-            $('#from_date').val('');
-            $('#to_date').val('');
-            $('#order_table').DataTable().destroy();
-            load_data();
-        });
+        
         $("#other").keyup(function() {
+            var city = $('#city').val();
+            var state = $('#state').val();
             var other = $('#other').val();
             var from_date = $('#from_date').val().split("-").reverse().join("-");
             var to_date = $('#to_date').val().split("-").reverse().join("-");
             if (other.length != 0) {
-                // $('#other').val('');
-                // $('#from_date').val('');
-                // $('#to_date').val('');
-                sessionStorage.setItem("report_id", other);
-                sessionStorage.setItem("report_date", '');
                 $('#order_table').DataTable().destroy();
-                load_data(other, from_date, to_date);
+                load_data(other, from_date, to_date, state, city);
             } else {
                 $('#order_table').DataTable().destroy();
                 load_data();
@@ -193,11 +219,13 @@
             }
         });
         $("#to_date").change(function() {
+            var city = $('#city').val();
+            var state = $('#state').val();
             var other = $('#other').val();
             var from_date = $('#from_date').val().split("-").reverse().join("-");
             var to_date = $('#to_date').val().split("-").reverse().join("-");
             if (!from_date) {
-		$('.notify-container').empty();
+		        $('.notify-container').empty();
                 notify({
                     message: 'Please select a from date first.',
                     color: 'danger',
@@ -212,7 +240,7 @@
                     var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
                     if (diffDays > 7) {
-			$('.notify-container').empty();
+			            $('.notify-container').empty();
                         notify({
                             message: 'Please select a date range within 7 days.',
                             color: 'danger',
@@ -220,13 +248,11 @@
                         });
                         return false;
                     } else {
-                        sessionStorage.setItem("report_date", from_date + '-' + to_date);
-                        sessionStorage.setItem("report_id", '');
                         $('#order_table').DataTable().destroy();
-                        load_data(other, from_date, to_date);
+                        load_data(other, from_date, to_date, state, city);
                     }
                 } else {
-			$('.notify-container').empty();
+			        $('.notify-container').empty();
                     notify({
                             message: 'Please select a valid date.',
                             color: 'danger',
@@ -238,6 +264,8 @@
 
         });
         $("#from_date").change(function() {
+            var city = $('#city').val();
+            var state = $('#state').val();
             var other = $('#other').val();
             var from_date = $('#from_date').val().split("-").reverse().join("-");
             var to_date = $('#to_date').val().split("-").reverse().join("-");
@@ -248,7 +276,7 @@
                 var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
                 if (diffDays > 7) {
-			$('.notify-container').empty();
+			        $('.notify-container').empty();
                     notify({
                             message: 'Please select a date range within 7 days.',
                             color: 'danger',
@@ -257,7 +285,7 @@
                     return false;
                 } else {
                     $('#order_table').DataTable().destroy();
-                    load_data(other, from_date, to_date);
+                    load_data(other, from_date, to_date, state, city);
                 }
             }
         });
@@ -304,7 +332,7 @@
                     }
                 });
             } else {
-		$('.notify-container').empty();
+		    $('.notify-container').empty();
                 notify({
                     message: 'For exporting data please search by CSC ID or use date range filter.',
                     color: 'danger',
@@ -315,5 +343,42 @@
     });
       
 </script>
-
+<script>
+    $(document).ready(function(){
+        $('#state').on('change',function(){
+            var state=this.value;
+            var city = $('#city').val();
+            var other = $('#other').val();
+            var from_date = $('#from_date').val().split("-").reverse().join("-");
+            var to_date = $('#to_date').val().split("-").reverse().join("-");
+            $.ajax({
+                url: "{{ route('count.state.city.wise') }}",
+                type: "POST",
+                data: {_token: "{{ csrf_token() }}",state : state},
+                dataType: "json",
+                success: function(response){
+                    if (response.status==200) {
+                        $('#city option:gt(0)').remove();
+                        $.each(response.data.all_city, function(key, value) {   
+                            $('#city').append($("<option></option>").attr("value", value).text(value)); 
+                        });
+                        
+                    }
+                }
+            });
+            $('#order_table').DataTable().destroy();
+            load_data(other, from_date, to_date,state,city);
+        });
+        $('#city').on('change',function(){
+            var state=$('#state').val();
+            var city=this.value;
+            var other = $('#other').val();
+            var from_date = $('#from_date').val().split("-").reverse().join("-");
+            var to_date = $('#to_date').val().split("-").reverse().join("-");
+            $('#order_table').DataTable().destroy();
+            load_data(other, from_date, to_date, state, city);
+            
+        });
+    });
+</script>
 @endsection

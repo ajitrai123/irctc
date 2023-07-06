@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 use DB;
 use DataTables;
-use App\Models\Cancellation;
+use App\Models\Agents;
 // use Carbon\Carbon;
+use App\Models\Cancellation;
 use Illuminate\Http\Request;
 use App\Exports\CancellationExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -17,13 +18,15 @@ class CancellationController extends Controller
    
      if(request()->ajax())
      {
-      if(!empty($request->other) || !empty($request->from_date) || !empty($request->to_date))
+      if(!empty($request->other) || !empty($request->from_date) || !empty($request->to_date) || !empty($request->state) || !empty($request->city))
       {
 
-      $from_date = $request->input('from_date');
-    //   $to_date = Carbon::parse($request->input('to_date'))->addDay();
-      $to_date   = $request->input('to_date');
-      $other    = $request->input('other');
+        $from_date = $request->input('from_date');
+        //   $to_date = Carbon::parse($request->input('to_date'))->addDay();
+        $to_date   = $request->input('to_date');
+        $other    = $request->input('other');
+        $state   = $request->input('state');
+        $city    = $request->input('city');
 
     $query = DB::table('passengers')
     ->join('bookings', 'bookings.id', '=', 'passengers.bookingId')
@@ -32,7 +35,8 @@ class CancellationController extends Controller
         $join->on('payments.bookingId', '=', 'bookings.id')
              ->on('payments.agentUid', '=', 'agents.id');
     })
-    ->select('passengers.*', 'bookings.pnrNumber', 'bookings.dateOfBooking', 'agents.cscId', 'agents.agentUserId', 'payments.csc_txn');
+    ->whereNotNull('passengers.cancellationId')
+    ->select('passengers.*', 'bookings.pnrNumber','bookings.id as bookingId', 'bookings.dateOfBooking', 'agents.cscId', 'agents.agentUserId', 'payments.csc_txn');
 
     if (!empty($other)) {
         $query->where('bookings.id', 'like','%'. $other .'%')
@@ -41,7 +45,13 @@ class CancellationController extends Controller
         ->orWhere('payments.csc_txn','like','%'. $other .'%')
         ->orWhere('bookings.pnrNumber','like','%'. $other .'%')
         ->orWhere('passengers.cancellationId', 'like','%'. $other .'%');
-    }    
+    }  
+    if (!empty($state)) {
+        $query->where('agents.stateId', $state);
+    }
+    if (!empty($city)) {
+        $query->where('agents.cityId', $city);
+    }  
     if (!empty($from_date) && !empty($to_date)) {
         $query->whereBetween('bookings.created_at', array($from_date, date('Y-m-d', strtotime($to_date. ' + 1 days'))));
     }
@@ -66,6 +76,8 @@ class CancellationController extends Controller
                 ->on('payments.agentUid', '=', 'agents.id');
        })
        ->select('passengers.*', 'bookings.pnrNumber', 'bookings.dateOfBooking', 'agents.cscId', 'agents.agentUserId', 'payments.csc_txn')
+       ->whereNotNull('passengers.cancellationId')
+    //    ->where('bookings.id', null) 
        ->get();
          return Datatables::of($received_data)->addIndexColumn()
          ->addColumn('action', function($row){
@@ -80,7 +92,8 @@ class CancellationController extends Controller
       }
       return datatables()->of($received_data)->make(true);
      }
-     return view('cancellation');
+     $all_state = Agents::groupBy('stateId')->pluck('stateId');
+     return view('cancellation',compact('all_state'));
     }
     public function cancellation_export(Request $request)
     {

@@ -1,14 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Transaction;
-use DataTables;
 use DB;
-use App\Exports\TransectionExport;
-use Maatwebsite\Excel\Facades\Excel;
+use DataTables;
+use App\Models\Agents;
+use App\Models\Transaction;
+use Illuminate\Http\Request;
 // use Carbon\Carbon;
 
-use Illuminate\Http\Request;
+use App\Exports\TransectionExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TransactionController extends Controller
 {
@@ -19,13 +20,15 @@ class TransactionController extends Controller
    
      if(request()->ajax())
      {
-      if(!empty($request->other) || !empty($request->from_date) || !empty($request->to_date))
+      if(!empty($request->other) || !empty($request->from_date) || !empty($request->to_date) || !empty($request->state) || !empty($request->city))
       {
 
-      $from_date = $request->input('from_date');
-    //   $to_date = Carbon::parse($request->input('to_date'))->addDay();
-      $to_date   = $request->input('to_date');
-      $other    = $request->input('other');
+        $from_date = $request->input('from_date');
+        //   $to_date = Carbon::parse($request->input('to_date'))->addDay();
+        $to_date   = $request->input('to_date');
+        $other    = $request->input('other');
+        $state   = $request->input('state');
+        $city    = $request->input('city');
 
     $query = DB::table('payments')
     ->join('agents', 'payments.agentUid', '=', 'agents.id')
@@ -36,7 +39,12 @@ class TransactionController extends Controller
         ->orWhere('agents.cscId','like','%'. $other .'%')
         ->orWhere('payments.reqTxn','like','%'. $other .'%');
     }    
-       
+    if (!empty($state)) {
+        $query->where('agents.stateId', $state);
+    }
+    if (!empty($city)) {
+        $query->where('agents.cityId', $city);
+    }
     if (!empty($from_date) && !empty($to_date)) {
         $query->whereBetween('created_at', array($from_date, date('Y-m-d', strtotime($to_date. ' + 1 days'))));
     }
@@ -57,6 +65,7 @@ class TransactionController extends Controller
         $received_data = DB::table('payments')
         ->join('agents', 'payments.agentUid', '=', 'agents.id')
         ->select('payments.*', 'agents.cscId', 'agents.agentUserId' )
+        // ->where('payments.id', null) 
             ->get();
             return Datatables::of($received_data)->addIndexColumn()
             ->addColumn('action', function($row){
@@ -71,7 +80,8 @@ class TransactionController extends Controller
         }
       return datatables()->of($received_data)->make(true);
      }
-     return view('transaction');
+     $all_state = Agents::groupBy('stateId')->pluck('stateId');
+     return view('transaction',compact('all_state'));
     }
     public function transection_export(Request $request)
     {

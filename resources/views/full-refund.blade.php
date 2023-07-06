@@ -1,100 +1,184 @@
 @extends('layouts.master')
 @section('content')
 <style>
-    td:nth-child(6n) {  
-    color:green;    
+    td:nth-child(6n) {
+        color: green;
     }
 </style>
-            <nav aria-label="breadcrumb background-light text-right">
-                <ol class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="#">Home</a></li>
-                  <li class="breadcrumb-item"><a href="#">Report</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">Full-Refund Report </li>
-                </ol>
-              </nav>
-            <div class="container-fluid mw-1200 py-30">
-                <div class="box  mb-4">
-                    <div class="box-body">
-                        <div class="row">
-                            <div class="col-8">
-                                <h6 class="mb-0">Full Refund Report</h6>
-                            </div>
-                           
-                        </div>
-                    </div>
-                    <hr class="m-0">
-                    <div class="box-body">
-                        <div class="tab-content " id="myTabContent">
-                            <div class="tab-pane fade show active" id="unresolved" role="tabpanel" aria-labelledby="unresolved-tab">
-                                
-                                <div class="row justify-content-end">
-                                    
-                                    <div class="col-md-3 mb-3">
-                                        <input type="text" class="form-control " placeholder="Search by CSC ID" id="other" name="other" value="">
-                                    </div>
-                                   
-                                    <div class="col-md-2 mb-3 input-daterange">
-                                        <input type="text" class="form-control " placeholder="Start Date" id="from_date" name="from_date" value="" readonly />
-                                    </div>
-                                    <div class="col-md-2 mb-3 input-daterange">
-                                        <input type="text" class="form-control " placeholder="End Date" id="to_date"
-                                            name="to_date" value="" readonly />
-                                    </div>
-                                    {{-- <div class="col-sm-2">
-                                        <button type="submit" class="btn btn-light"  name="filter" id="filter" title="Search"><i class="bx bx-search"></i></button>
-                                    </div> --}}
-                                    {{-- <div class="col-md-1 mb-3">
-                                        <button type="button" id="clear-filter-btn" class="btn btn-light"><i class="bx bx-refresh"></i></button>
-                                    </div> --}}
-                                    <div class="col-md-1 mb-3">
-                                        <button type="button" id="export-btn" class="btn btn-light"><i class="bx bx-download"></i></button>
+<nav aria-label="breadcrumb background-light text-right">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Report</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Full-Refund Report </li>
+    </ol>
+</nav>
+<div class="container-fluid mw-1200 py-30">
+    <div class="box  mb-4">
+        <div class="box-body">
+            <div class="row">
+                <div class="col-8">
+                    <h6 class="mb-0">Full Refund Report</h6>
+                </div>
 
-                                    </div>
-                                </div>
-                                <div class="table-responsive">
-                                  
-                                        <table  id="order_table" class="table table-striped fullrefund">
-                                        <thead class="">
-                                            {{-- SL NO	CSC ID	AGENT ID	CSC TRANSACTION ID	MERCHANT TRANSACTION ID	CREATION DATE	STATUS	ACTION --}}
-                                            <tr>
-                                                <th class="small font-weight-bold text-uppercase  " scope="col">Sl no</th>
-                                                <th class="small font-weight-bold text-uppercase  " scope="col">CSC ID</th>
-                                                <th class="small font-weight-bold text-uppercase  " scope="col">AGENT ID</th>
-                                                <th class="small font-weight-bold text-uppercase  " scope="col">CSC TRANSACTION ID</th>
-                                                <th class="small font-weight-bold text-uppercase  " scope="col">MERCHANT TRANSACTION ID</th>
-                                                <th class="small font-weight-bold text-uppercase  " scope="col">CREATION DATE</th>
-                                                <th class="small font-weight-bold text-uppercase  " scope="col">STATUS</th>
-                                                <th class="small font-weight-bold text-uppercase  " scope="col">ACTION</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            
-                                        </tbody>
-                                    </table>
-                                   
-                                </div>
-                                {{-- <nav aria-label="Page navigation example">
-                                    <ul class="pagination">
-                                      <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                                      <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                      <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                      <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                      <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                                    </ul>
-                                  </nav> --}}
-
-
-                            </div>
-                          
-                           
-                        </div>
-                    </div>
-                </div> 
-               
             </div>
+        </div>
+        <hr class="m-0">
+        <div class="box-body">
+            <div class="tab-content " id="myTabContent">
+                <div class="tab-pane fade show active" id="unresolved" role="tabpanel" aria-labelledby="unresolved-tab">
 
+                    <div class="row justify-content-start">
 
+                        <div class="col-md-3 mb-3">
+                            <input type="text" class="form-control " placeholder="Search by CSC ID" id="other"
+                                name="other" value="">
+                        </div>
 
+                        <div class="col-md-2 mb-3 input-daterange">
+                            <input type="text" class="form-control " placeholder="Start Date" id="from_date"
+                                name="from_date" value="" readonly />
+                        </div>
+                        <div class="col-md-2 mb-3 input-daterange">
+                            <input type="text" class="form-control " placeholder="End Date" id="to_date" name="to_date"
+                                value="" readonly />
+                        </div>
+                        <div class="col-md-2 mb-3 input-daterange">
+                            <select name="state" id="state" class="form-control">
+                                <option value="">Select State</option>
+                                @foreach ($all_state as $state)
+                                <option value="{{ $state }}">{{ $state }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-3 input-daterange">
+                            <select name="city" id="city" class="form-control">
+                                <option value="">Select City</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 mb-3">
+                            <button type="button" id="export-btn" class="btn btn-light"><i
+                                    class="bx bx-download"></i></button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+
+                        <table id="order_table" class="table table-striped fullrefund">
+                            <thead class="">
+                                {{-- SL NO CSC ID AGENT ID CSC TRANSACTION ID MERCHANT TRANSACTION ID CREATION DATE
+                                STATUS ACTION --}}
+                                <tr>
+                                    <th class="small font-weight-bold text-uppercase  " scope="col">Sl no</th>
+                                    <th class="small font-weight-bold text-uppercase  " scope="col">CSC ID</th>
+                                    <th class="small font-weight-bold text-uppercase  " scope="col">Booking Id</th>
+                                    <th class="small font-weight-bold text-uppercase  " scope="col">AGENT ID</th>
+                                    <th class="small font-weight-bold text-uppercase  " scope="col">CSC TRANSACTION ID
+                                    </th>
+                                    <th class="small font-weight-bold text-uppercase  " scope="col">MERCHANT TRANSACTION
+                                        ID</th>
+                                    <th class="small font-weight-bold text-uppercase  " scope="col">CREATION DATE</th>
+                                    <th class="small font-weight-bold text-uppercase  " scope="col">STATUS</th>
+                                    <th class="small font-weight-bold text-uppercase  " scope="col">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function load_data(other = '', from_date = '', to_date = '', state = '', city = '') {
+    var table = $('#order_table').DataTable({
+        buttons: [
+            // 'excelHtml5',    'copy', 'excel'      
+        ],
+        dom: 'Rrtp',
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: '{{ route("index_fullrefund") }}',
+            data: {
+                other: other,
+                from_date: from_date,
+                to_date: to_date,
+                state: state,
+                city: city
+            }
+        },
+        drawCallback: function (settings) { 
+            // Here the response
+            var response = settings.json;
+            if (response.recordsTotal <= 0) {
+                $('#export-btn').prop('disabled', true);
+                $('#export-btn').css("background", "red");
+                $('#export-btn').css("color", "#fff");
+            }else{
+                $('#export-btn').prop('disabled', false);
+                $('#export-btn').css("background", "green")
+                $('#export-btn').css("color", "#fff");
+            }
+        },
+        // SL NO	CSC ID	AGENT ID	CSC TRANSACTION ID	MERCHANT TRANSACTION ID	CREATION DATE	STATUS	ACTION
+        columns: [{
+                data: 'id',
+                name: 'id'
+            },
+            {
+                data: 'cscId',
+                name: 'cscId'
+            },
+            {
+                data: 'bookingId',
+                name: 'bookingId'
+            },
+            {
+                data: 'agentUserId',
+                name: 'agentUserId'
+            },
+            {
+                data: 'csc_txn',
+                name: 'csc_txn'
+            },
+            {
+                data: 'agentUserId',
+                name: 'agentUserId'
+            },
+            {
+                data: 'created_at',
+                "render": function (data) {
+                    var date = new Date(data);
+                    var month = date.getMonth() + 1;
+                    return date.getDate() + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear();
+                }
+            },
+            {
+                data: 'status',
+                // name: 'status'
+                render : function(data, type, row) {
+                    if (data==0) {
+                        return '<span class="badge badge-warning px-2 py-1"><i class="bx bx-check-circle text-white"></i> Pending</span>'
+                    }else if (data==1) {
+                        return '<span class="badge badge-success px-2 py-1"><i class="bx bx-check-circle text-white"></i> Success</span>'
+                    }else{
+                        return '<span class="badge badge-danger px-2 py-1"><i class="bx bx-check-circle text-white"></i> Failed</span>'
+                    }
+                    
+                } 
+            },
+            {
+                data: 'action',
+                name: 'action',
+                orderable: true,
+                searchable: true
+            },
+        ]
+    });
+}
+</script>
 <script>
     $(document).ready(function(){
         $( "#from_date" ).datepicker({
@@ -120,91 +204,16 @@
 
         load_data();
 
-        function load_data(other = '', from_date = '', to_date = '') {
-
-            var table = $('#order_table').DataTable({
-                buttons: [
-                    // 'excelHtml5',    'copy', 'excel'      
-                ],
-                dom: 'Rrtp',
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: '{{ route("index_fullrefund") }}',
-                    data: {
-                        other: other,
-                        from_date: from_date,
-                        to_date: to_date
-                    }
-                },
-                // SL NO	CSC ID	AGENT ID	CSC TRANSACTION ID	MERCHANT TRANSACTION ID	CREATION DATE	STATUS	ACTION
-                columns: [{
-                        data: 'id',
-                        name: 'id'
-                    },
-                    {
-                        data: 'cscId',
-                        name: 'cscId'
-                    },
-                    {
-                        data: 'agentUserId',
-                        name: 'agentUserId'
-                    },
-                    {
-                        data: 'csc_txn',
-                        name: 'csc_txn'
-                    },
-                    {
-                        data: 'agentUserId',
-                        name: 'agentUserId'
-                    },
-                    {
-                        data: 'created_at',
-                        "render": function (data) {
-                            var date = new Date(data);
-                            var month = date.getMonth() + 1;
-                            return date.getDate() + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear();
-                        }
-                    },
-                    {
-                        data: 'status',
-                        // name: 'status'
-                        render : function(data, type, row) {
-                            if (data==0) {
-                                return '<span class="badge badge-warning px-2 py-1"><i class="bx bx-check-circle text-white"></i> Pending</span>'
-                            }else if (data==1) {
-                                return '<span class="badge badge-success px-2 py-1"><i class="bx bx-check-circle text-white"></i> Success</span>'
-                            }else{
-                                return '<span class="badge badge-danger px-2 py-1"><i class="bx bx-check-circle text-white"></i> Failed</span>'
-                            }
-                            
-                        } 
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: true,
-                        searchable: true
-                    },
-                ]
-            });
-
-
-
-
-        }
+        
         $("#other").keyup(function() {
+            var city = $('#city').val();
+            var state = $('#state').val();
             var other = $('#other').val();
             var from_date = $('#from_date').val().split("-").reverse().join("-");
             var to_date = $('#to_date').val().split("-").reverse().join("-");
             if (other.length != 0) {
-                // $('#other').val('');
-                // $('#from_date').val('');
-                // $('#to_date').val('');
-                sessionStorage.setItem("report_id", other);
-                sessionStorage.setItem("report_date", '');
                 $('#order_table').DataTable().destroy();
-                load_data(other, from_date, to_date);
+                load_data(other, from_date, to_date, state, city);
             } else {
                 $('#order_table').DataTable().destroy();
                 load_data();
@@ -212,11 +221,13 @@
             }
         });
         $("#to_date").change(function() {
+            var city = $('#city').val();
+            var state = $('#state').val();
             var other = $('#other').val();
             var from_date = $('#from_date').val().split("-").reverse().join("-");
             var to_date = $('#to_date').val().split("-").reverse().join("-");
             if (!from_date) {
-		$('.notify-container').empty();
+		        $('.notify-container').empty();
                 notify({
                     message: 'Please select a from date first.',
                     color: 'danger',
@@ -229,9 +240,8 @@
                     var toDateObj = new Date(to_date);
                     var timeDiff = Math.abs(toDateObj.getTime() - fromDateObj.getTime());
                     var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
                     if (diffDays > 7) {
-			$('.notify-container').empty();
+			            $('.notify-container').empty();
                         notify({
                             message: 'Please select a date range within 7 days.',
                             color: 'danger',
@@ -244,13 +254,10 @@
                         sessionStorage.setItem("report_date", from_date + '-' + to_date);
                         sessionStorage.setItem("report_id", '');
                         $('#order_table').DataTable().destroy();
-                        load_data(other, from_date, to_date);
-                        // $('#other').val('');
-                        // $('#from_date').val('');
-                        // $('#to_date').val('');
+                        load_data(other, from_date, to_date, state, city);
                     }
                 } else {
-			$('.notify-container').empty();
+			        $('.notify-container').empty();
                     notify({
                             message: 'Please select a valid date.',
                             color: 'danger',
@@ -262,8 +269,10 @@
 
         });
         $("#from_date").change(function() {
+            var city = $('#city').val();
+            var state = $('#state').val();
             var other = $('#other').val();
-	    var from_date = $('#from_date').val().split("-").reverse().join("-");
+	        var from_date = $('#from_date').val().split("-").reverse().join("-");
             var to_date = $('#to_date').val().split("-").reverse().join("-");
             if (from_date.length != 0 && to_date.length != 0) {
                 var fromDateObj = new Date(from_date);
@@ -272,7 +281,7 @@
                 var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
                 if (diffDays > 7) {
-			$('.notify-container').empty();
+			        $('.notify-container').empty();
                     notify({
                             message: 'Please select a date range within 7 days.',
                             color: 'danger',
@@ -282,19 +291,16 @@
                     $('#to_date').val('');
                     return false;
                 } else {
-                    sessionStorage.setItem("report_date", from_date + '-' + to_date);
-                    sessionStorage.setItem("report_id", '');
                     $('#order_table').DataTable().destroy();
-                    load_data(other, from_date, to_date);
-                    // $('#other').val('');
-                    // $('#from_date').val('');
-                    // $('#to_date').val('');
+                    load_data(other, from_date, to_date, state, city);
                 }
             }
         });
 
         // Export button event handler
         $('#export-btn').on('click', function() {
+            var city = $('#city').val();
+            var state = $('#state').val();
             var other = $('#other').val();
             var from_date = $('#from_date').val().split("-").reverse().join("-");
             var to_date = $('#to_date').val().split("-").reverse().join("-");
@@ -305,7 +311,7 @@
                     headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                    data:{other:other,from_date:from_date,to_date:to_date},
+                    data:{other:other,from_date:from_date,to_date:to_date, state:state, city:city},
                     success:function(result, status, xhr) {
                         var disposition = xhr.getResponseHeader('content-disposition');
                         var matches = /"([^"]*)"/.exec(disposition);
@@ -327,7 +333,7 @@
 
                         link.click();
                         document.body.removeChild(link);
-			$('.notify-container').empty();
+			            $('.notify-container').empty();
                         notify({
                             message: 'Data is exported.',
                             color: 'success',
@@ -336,7 +342,7 @@
                     }
                 });
             } else {
-		$('.notify-container').empty();
+		        $('.notify-container').empty();
                 notify({
                     message: 'For exporting data please search by CSC ID or use date range filter.',
                     color: 'danger',
@@ -344,9 +350,43 @@
                 });            }
         });
     });
-</script> 
+</script>
+<script>
+    $(document).ready(function(){
+        $('#state').on('change',function(){
+            var state=this.value;
+            var city = $('#city').val();
+            var other = $('#other').val();
+            var from_date = $('#from_date').val().split("-").reverse().join("-");
+            var to_date = $('#to_date').val().split("-").reverse().join("-");
+            $.ajax({
+                url: "{{ route('count.state.city.wise') }}",
+                type: "POST",
+                data: {_token: "{{ csrf_token() }}",state : state},
+                dataType: "json",
+                success: function(response){
+                    if (response.status==200) {
+                        $('#city option:gt(0)').remove();
+                        $.each(response.data.all_city, function(key, value) {   
+                            $('#city').append($("<option></option>").attr("value", value).text(value)); 
+                        });
+                        
+                    }
+                }
+            });
+            $('#order_table').DataTable().destroy();
+            load_data(other, from_date, to_date,state,city);
+        });
+        $('#city').on('change',function(){
+            var state=$('#state').val();
+            var city=this.value;
+            var other = $('#other').val();
+            var from_date = $('#from_date').val().split("-").reverse().join("-");
+            var to_date = $('#to_date').val().split("-").reverse().join("-");
+            $('#order_table').DataTable().destroy();
+            load_data(other, from_date, to_date, state, city);
+            
+        });
+    });
+</script>
 @endsection
-    
-
-
-

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use DB;
 use DataTables;
+use App\Models\Agents;
 use Illuminate\Http\Request;
 use App\Models\partialrefund;
 use App\Exports\PartialRefundExport;
@@ -14,14 +15,15 @@ class Partialrefundscontrollers extends Controller
     {
         if(request()->ajax())
         {
-            if(!empty($request->other) || !empty($request->from_date) || !empty($request->to_date))
+            if(!empty($request->other) || !empty($request->from_date) || !empty($request->to_date) || !empty($request->state) || !empty($request->city))
             {
 
                 $from_date = $request->input('from_date');
                 //   $to_date = Carbon::parse($request->input('to_date'))->addDay();
                 $to_date   = $request->input('to_date');
                 $other    = $request->input('other');
-            
+                $state   = $request->input('state');
+                $city    = $request->input('city');
 
                 $query = DB::table('partial_refund')
                 ->join('bookings', 'partial_refund.bookingId', '=', 'bookings.id') 
@@ -36,7 +38,12 @@ class Partialrefundscontrollers extends Controller
                     ->orWhere('payments.csc_txn', 'like','%'. $other .'%')
                     ->orWhere('partial_refund.cancellationId', 'like','%'. $other .'%');
                 }    
-            
+                if (!empty($state)) {
+                    $query->where('agents.stateId', $state);
+                }
+                if (!empty($city)) {
+                    $query->where('agents.cityId', $city);
+                }
                 if (!empty($from_date) && !empty($to_date)) {
                     $query->whereBetween('partial_refund.created_at', array($from_date, date('Y-m-d', strtotime($to_date. ' + 1 days'))));
                 }
@@ -58,8 +65,9 @@ class Partialrefundscontrollers extends Controller
                 ->join('agents', 'bookings.agentUid', '=', 'agents.id')   
                 ->join('payments', 'bookings.id', '=', 'payments.bookingId') 
                 ->join('passengers', 'partial_refund.bookingId', '=', 'passengers.bookingId') 
-                ->select('partial_refund.*', 'bookings.agentUid','agents.cscId', 'agents.agentUserId','payments.csc_txn','bookings.trainNumber');  //,'passengers.refundAmount' 
-            
+                ->select('partial_refund.*', 'bookings.agentUid','bookings.id as bookingId','agents.cscId', 'agents.agentUserId','payments.csc_txn','bookings.trainNumber');//,'passengers.refundAmount' 
+                // ->where('bookings.id', null) ;  
+                
                 $received_data = $query->get();
                 // return $received_data;
                 return Datatables::of($received_data)->addIndexColumn()
@@ -74,7 +82,8 @@ class Partialrefundscontrollers extends Controller
                 }
             return datatables()->of($received_data)->make(true);
         }
-        return view('Partial-Refund');
+        $all_state = Agents::groupBy('stateId')->pluck('stateId');
+        return view('Partial-Refund',compact('all_state'));
     }
     public function partial_Refund_export(Request $request)
     {

@@ -29,31 +29,8 @@
                     <div class="box-body">
                         <div class="tab-content " id="myTabContent">
                             <div class="tab-pane fade show active" id="unresolved" role="tabpanel" aria-labelledby="unresolved-tab">
-                        
-
-                            
-                                <div class="row justify-content-end">
-                                    <div class="col-md-10 mb-3">
-                                    {{-- <form  action="{{route('index_cancellation')}}" method ="POST" id="search"> 
-                                    @csrf
-                                    <div  class="row justify-content-end">
-                                        <div class="col-md-4 mb-3">
-                                            <input type="text" class="form-control " placeholder="Search by CSC ID" id="other" name="other">
-                                        </div>                           
-                                        <div class="col-md-2 mb-3">
-                                            <input type="date" class="form-control " placeholder="Keyword search" id="from_date" name="from_date"  required/>
-                                        </div>
-                                        <div class="col-md-2 mb-3">
-                                            <input type="date" class="form-control " placeholder="Keyword search" id="to_date" name="to_date" value="" required/>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <button type="submit" class="btn btn-light"  name="filter" id="Search" title="Search"><i class="bx bx-search"></i></button>
-                                        </div>
-                                    </div>
-                                    </form> --}}
-
-                                    <div class="row justify-content-end">
-                                        <div class="col-md-4 mb-3">
+                                    <div class="row justify-content-start">
+                                        <div class="col-md-3 mb-3">
                                             <input type="text" class="form-control " placeholder="Search by CSC ID" id="other" name="other" value="">
                                         </div> 
                                         <div class="col-md-2 mb-3 input-daterange">
@@ -62,6 +39,19 @@
                                         <div class="col-md-2 mb-3 input-daterange">
                                             <input type="text" class="form-control " placeholder="End Date" id="to_date"
                                                 name="to_date" value="" readonly />
+                                        </div>
+                                        <div class="col-md-2 mb-3 input-daterange">
+                                            <select name="state" id="state" class="form-control">
+                                                <option value="">Select State</option>
+                                                @foreach ($all_state as $state)
+                                                <option value="{{ $state }}">{{ $state }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2 mb-3 input-daterange">
+                                            <select name="city" id="city" class="form-control">
+                                                <option value="">Select City</option>
+                                            </select>
                                         </div>
                                         <div class="col-md-1">
                                             <button type="button" id="export-btn" class="btn btn-light"><i class="bx bx-download"></i></button>
@@ -77,7 +67,7 @@
                                                 <tr>
                                                     <th class="small font-weight-bold text-uppercase  " scope="col">Sl no</th>
                                                     <th class="small font-weight-bold text-uppercase  " scope="col">CSC Id</th>
-                                                   
+                                                    <th class="small font-weight-bold text-uppercase  " scope="col">Booking Id</th>
                                                     <th class="small font-weight-bold text-uppercase  " scope="col">Agent ID</th>
                                                     <th class="small font-weight-bold text-uppercase  " scope="col">Transaction ID</th>
                                                     <th class="small font-weight-bold text-uppercase  " scope="col">Cancellation ID</th>
@@ -100,13 +90,104 @@
                 </div>   
             </div>
 <script>
+    function load_data(other = '', from_date = '', to_date = '', state = '', city = '') {
+        var table = $('#order_table').DataTable({
+            buttons: [
+                // 'excelHtml5',    'copy', 'excel'      
+            ],
+            dom: 'rrtp',
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '{{ route("index_cancellation") }}',
+                data: {
+                    other: other,
+                    from_date: from_date,
+                    to_date: to_date,
+                    state: state,
+                    city: city
+                }
+            },
+            drawCallback: function (settings) { 
+                // Here the response
+                var response = settings.json;
+                if (response.recordsTotal <= 0) {
+                    $('#export-btn').prop('disabled', true);
+                    $('#export-btn').css("background", "red");
+                    $('#export-btn').css("color", "#fff");
+                }else{
+                    $('#export-btn').prop('disabled', false);
+                    $('#export-btn').css("background", "green")
+                    $('#export-btn').css("color", "#fff");
+                }
+            },
+            // SL NO	CSC ID	AGENT ID	TRANSACTION ID	CANCELLATION ID	PNR NUMBER	BOOKING DATE	CANCELLATION DATE	REFUND AMOUNT	ACTION
+            columns: [{
+                    data: 'id',
+                    name: 'id'
+                },
+                {
+                    data: 'cscId',
+                    name: 'cscId'
+                },
+                {
+                    data: 'bookingId',
+                    name: 'bookingId'
+                },
+                {
+                    data: 'agentUserId',
+                    name: 'agentUserId'
+                },
+                {
+                    data: 'csc_txn',
+                    name: 'csc_txn'
+                },
+                {
+                    data: 'cancellationId',
+                    name: 'cancellationId'
+                },
+                {
+                    data: 'pnrNumber',
+                    name: 'pnrNumber'
+                },
+                {
+                    data: 'dateOfBooking',
+                    "render": function (data) {
+                        var date = new Date(data);
+                        var month = date.getMonth() + 1;
+                        return date.getDate() + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear();
+                    }
+                },
+                {
+                    data: 'cancellationDate',
+                    "render": function (data) {
+                        var date = new Date(data);
+                        var month = date.getMonth() + 1;
+                        return date.getDate() + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear();
+                    }
+                },
+                {
+                    data: 'refundAmount',
+                    name: 'refundAmount'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: true,
+                    searchable: true
+                },
+            ]
+        });
+    }
+</script>
+<script>
     $(document).ready(function(){
         $( "#from_date" ).datepicker({
             defaultDate: "+1d",
             changeMonth: true,
             changeYear: true,
             format: 'dd-mm-yyyy',
-	    endDate: '+0d',
+	        endDate: '+0d',
             autoclose: true
         }).on('hide', function() {
             var selected = $(this).val();
@@ -124,80 +205,10 @@
         });
 
         load_data();
-
-        function load_data(other = '', from_date = '', to_date = '') {
-
-            var table = $('#order_table').DataTable({
-                buttons: [
-                    // 'excelHtml5',    'copy', 'excel'      
-                ],
-                dom: 'rrtp',
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: '{{ route("index_cancellation") }}',
-                    data: {
-                        other: other,
-                        from_date: from_date,
-                        to_date: to_date
-                    }
-                },
-                // SL NO	CSC ID	AGENT ID	TRANSACTION ID	CANCELLATION ID	PNR NUMBER	BOOKING DATE	CANCELLATION DATE	REFUND AMOUNT	ACTION
-                columns: [{
-                        data: 'id',
-                        name: 'id'
-                    },
-                    {
-                        data: 'cscId',
-                        name: 'cscId'
-                    },
-                    {
-                        data: 'agentUserId',
-                        name: 'agentUserId'
-                    },
-                    {
-                        data: 'csc_txn',
-                        name: 'csc_txn'
-                    },
-                    {
-                        data: 'cancellationId',
-                        name: 'cancellationId'
-                    },
-                    {
-                        data: 'pnrNumber',
-                        name: 'pnrNumber'
-                    },
-                    {
-                        data: 'dateOfBooking',
-                        "render": function (data) {
-                            var date = new Date(data);
-                            var month = date.getMonth() + 1;
-                            return date.getDate() + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear();
-                        }
-                    },
-                    {
-                        data: 'cancellationDate',
-                        "render": function (data) {
-                            var date = new Date(data);
-                            var month = date.getMonth() + 1;
-                            return date.getDate() + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear();
-                        }
-                    },
-                    {
-                        data: 'refundAmount',
-                        name: 'refundAmount'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: true,
-                        searchable: true
-                    },
-                ]
-            });
-        }
                 
         $("#other").keyup(function() {
+            var state = $('#state').val();
+            var city = $('#city').val();
             var other = $('#other').val();
              var from_date = $('#from_date').val().split("-").reverse().join("-");
             var to_date = $('#to_date').val().split("-").reverse().join("-");
@@ -218,11 +229,13 @@
         });
         $("#to_date").change(function() {
             var other = $('#other').val();
+            var state = $('#state').val();
+            var city = $('#city').val();
              var from_date = $('#from_date').val().split("-").reverse().join("-");
             var to_date = $('#to_date').val().split("-").reverse().join("-");
 
             if (!from_date) {
-		$('.notify-container').empty();
+		    $('.notify-container').empty();
                 notify({
                     message: 'Please select a from date first.',
                     color: 'danger',
@@ -250,7 +263,7 @@
                         sessionStorage.setItem("report_date", from_date + '-' + to_date);
                         sessionStorage.setItem("report_id", '');
                         $('#order_table').DataTable().destroy();
-                        load_data(other, from_date, to_date);
+                        load_data(other, from_date, to_date, state, city);
                         // $('#other').val('');
                         // $('#from_date').val('');
                         // $('#to_date').val('');
@@ -269,7 +282,9 @@
         });
         $("#from_date").change(function() {
             var other = $('#other').val();
-	     var from_date = $('#from_date').val().split("-").reverse().join("-");
+            var state = $('#state').val();
+            var city = $('#city').val();
+	        var from_date = $('#from_date').val().split("-").reverse().join("-");
             var to_date = $('#to_date').val().split("-").reverse().join("-");
 
             if (from_date.length != 0 && to_date.length != 0) {
@@ -292,7 +307,7 @@
                     sessionStorage.setItem("report_date", from_date + '-' + to_date);
                     sessionStorage.setItem("report_id", '');
                     $('#order_table').DataTable().destroy();
-                    load_data(other, from_date, to_date);
+                    load_data(other, from_date, to_date, state, city);
                     // $('#other').val('');
                     // $('#from_date').val('');
                     // $('#to_date').val('');
@@ -303,7 +318,9 @@
         // Export button event handler
         $('#export-btn').on('click', function() {
             var other = $('#other').val();
-	     var from_date = $('#from_date').val().split("-").reverse().join("-");
+            var state = $('#state').val();
+            var city = $('#city').val();
+	        var from_date = $('#from_date').val().split("-").reverse().join("-");
             var to_date = $('#to_date').val().split("-").reverse().join("-");
 
             if (other != '' || from_date != '') {
@@ -335,7 +352,7 @@
 
                         link.click();
                         document.body.removeChild(link);
-			$('.notify-container').empty();
+			            $('.notify-container').empty();
                         notify({
                             message: 'Data is exported.',
                             color: 'success',
@@ -353,7 +370,44 @@
         });
     });
 </script> 
-
+<script>
+    $(document).ready(function(){
+        $('#state').on('change',function(){
+            var state=this.value;
+            var city = $('#city').val();
+            var other = $('#other').val();
+            var from_date = $('#from_date').val().split("-").reverse().join("-");
+            var to_date = $('#to_date').val().split("-").reverse().join("-");
+            $.ajax({
+                url: "{{ route('count.state.city.wise') }}",
+                type: "POST",
+                data: {_token: "{{ csrf_token() }}",state : state},
+                dataType: "json",
+                success: function(response){
+                    if (response.status==200) {
+                        $('#city option:gt(0)').remove();
+                        $.each(response.data.all_city, function(key, value) {   
+                            $('#city').append($("<option></option>").attr("value", value).text(value)); 
+                        });
+                        
+                    }
+                }
+            });
+            $('#order_table').DataTable().destroy();
+            load_data(other, from_date, to_date,state,city);
+        });
+        $('#city').on('change',function(){
+            var state=$('#state').val();
+            var city=this.value;
+            var other = $('#other').val();
+            var from_date = $('#from_date').val().split("-").reverse().join("-");
+            var to_date = $('#to_date').val().split("-").reverse().join("-");
+            $('#order_table').DataTable().destroy();
+            load_data(other, from_date, to_date, state, city);
+            
+        });
+    });
+</script>
 @endsection
 
 
